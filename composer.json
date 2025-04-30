@@ -1,0 +1,32 @@
+{
+    "name": "s3lp/piece-data",
+    "description": "Pseudo replication Eloquent models via HTTP",
+    "keywords": ["s3lp", "laravel", "eloquent", "replication", "sync"],
+    "type": "project",
+    "license": "MIT",
+    "minimum-stability": "dev",
+    "require": {
+        "ext-curl": "*",
+        "ext-json": "*"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^3.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "S3lp\\PieceData\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "S3lp\\PieceData\\Test\\": "tests/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "S3lp\\PieceData\\ServiceProvider"
+            ]
+        }
+    }
+}
