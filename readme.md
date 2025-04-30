@@ -17,7 +17,7 @@ Pseudo replication Laravel Eloquent models via HTTP
 ## Slave install
 
 1. `composer require s3lp/piece-data:dev-master`
-2. `artisan vendor:publish`
+2. `artisan vendor:publish --provider="S3lp\PieceData\ServiceProvider"`
 3. configure `import_models`  
    `['model_name' => App\Models\Model]`
 4. configure access - `allowed_ips` and/or `access_token`
@@ -26,3 +26,17 @@ Pseudo replication Laravel Eloquent models via HTTP
    `Route::any('/unique/import_route', '\\S3lp\\PieceData\\Controllers\\SyncImportController@syncImport');`
 
 
+## Tricks
+
+```php
+public function getSyncSlaves(): array
+{
+    if (true) {
+        return ['slave_name' => 'remove']; // force remove
+    } elseif (true) {
+        return array_filter(array_keys(config('sync_models.slaves')), 'callback');
+    } else {
+        return array_keys(config('sync_models.slaves'));
+    }
+}
+```

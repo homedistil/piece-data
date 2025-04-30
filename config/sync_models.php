@@ -2,7 +2,7 @@
 
 return [
     // Master config
-    'slaves' => env('SYNC_MODELS_SLAVES', []),
+    'slaves' => [],
     'export_models' => [],
     'export_curl_opts' => [],
     'max_sync_attempts' => 5,
@@ -13,6 +13,6 @@ return [
     // Slave config
     'import_models' => [],
     'auth_error_code' => 404,
-    'allowed_ips' => env('SYNC_MODELS_IPS', []),
+    'allowed_ips' => [],
     'access_token' => env('SYNC_MODELS_TOKEN', base64_encode(random_bytes(32))) // deny default
 ];
