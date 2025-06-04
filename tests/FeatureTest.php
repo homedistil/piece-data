@@ -128,4 +128,10 @@ class FeatureTest extends TestCase
 
         //$sync_row->forceDelete();
     }
+
+    public function testSyncCommandStatus()
+    {
+        $output = $this->artisan('sync:models --status');
+        $output->assertExitCode(0);
+    }
 }

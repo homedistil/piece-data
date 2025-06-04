@@ -9,7 +9,7 @@ Pseudo replication Laravel Eloquent models via HTTP
 4. configure `export_models`:  
    `['model_name' => App\Models\Model]`
 5. configure `access_token`
-6. `artisan migrate --path=vendor/s3lp/piece-data/database/migrations` or `artisan sync:model --migrate`
+6. `artisan migrate --path=vendor/s3lp/piece-data/database/migrations`
 7. implements `Syncable` interface
 8. sheduler include console command  
    `S3lp\PieceData\Console\SyncModelsExport`

@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Log;
 
 class SyncModelsExport extends Command
 {
-    protected $signature = 'sync:models {--migrate} {--reset} {--reset-chunk=} {--post-chunk=} {--models=}';
+    protected $signature = 'sync:models {--status} {--reset} {--reset-chunk=} {--post-chunk=} {--models=}';
 
     protected $description = 'Sync external-related models';
 
@@ -37,11 +37,6 @@ class SyncModelsExport extends Command
             return 0;
         } else if (empty(config('sync_models.slaves'))) {
             $this->warn('Undefined slaves');
-            return 0;
-        }
-
-        if ($this->option('migrate')) {
-            $this->migrateSyncTable();
             return 0;
         }
 
@@ -74,8 +69,44 @@ class SyncModelsExport extends Command
         } catch (QueryException $e) {
             $this->error($e->getMessage());
             if ($e->getPrevious()->getErrorCode() == 1146) {
-                $this->line('Call artisan sync:models --migrate');
+                $this->warn('Need migrate');
             }
+        }
+
+        if ($this->option('status')) {
+            $this->line('token: ' . config('sync_models.access_token'));
+            if ($allowed_ips = config('sync_models.allowed_ips')) {
+                $this->line('IPs: ' . implode(', ', $allowed_ips));
+            }
+
+            if ($slaves = config('sync_models.slaves')) {
+                $this->line('Slaves:');
+                foreach ($slaves as $key => $url) {
+                    $this->line("$key: $url");
+                }
+            } else {
+                $this->line('No slaves');
+            }
+
+            if ($models = config('sync_models.export_models')) {
+                $this->line('Export models:');
+                foreach ($models as $key => $class) {
+                    $this->line("$key: $class");
+                }
+            } else {
+                $this->line('No export models');
+            }
+
+            if ($models = config('sync_models.import_models')) {
+                $this->line('Import models:');
+                foreach ($models as $key => $class) {
+                    $this->line("$key: $class");
+                }
+            } else {
+                $this->line('No import models');
+            }
+
+            return 0;
         }
 
         $sync_model::query()
@@ -89,7 +120,7 @@ class SyncModelsExport extends Command
 
                     /* @var $model SyncModel */
                     $data = [
-                        'token' => config('sync_models.auth.token')
+                        'token' => config('sync_models.access_token')
                     ];
                     foreach ($sync_models as $model) {
                         $data[$model->handler_name][$model->model_name][$model->model_id] = $model->getSyncData();
@@ -168,12 +199,12 @@ class SyncModelsExport extends Command
         return $models;
     }
 
-    protected function migrateSyncTable()
-    {
-        $dir = str_replace('\\', '\\\\', __DIR__); // windows fix
-        $this->call('migrate --path=' . $dir . '../../database/migrations --realpath');
-        $this->line('Table sync_models_queue recreated');
-    }
+//    protected function migrateSyncTable()
+//    {
+//        $dir = str_replace('\\', '\\\\', __DIR__); // windows fix
+//        $this->call('migrate --path=' . $dir . '../../database/migrations --realpath');
+//        $this->line('Table sync_models_queue recreated');
+//    }
 
     protected function isRunning(): bool
     {
