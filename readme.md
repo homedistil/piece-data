@@ -20,10 +20,26 @@ Pseudo replication Laravel Eloquent models via HTTP
 2. `artisan vendor:publish --provider="S3lp\PieceData\ServiceProvider"`
 3. configure `import_models`  
    `['model_name' => App\Models\Model]`
-4. configure access - `allowed_ips` and/or `access_token`
-5. setup models $fillable
+4. configure access `allowed_ips` and/or `access_token`
+5. setup models `$fillable` attribute
 6. include API routes map:  
    `Route::any('/unique/import_route', '\\S3lp\\PieceData\\Controllers\\SyncImportController@syncImport');`
+
+## Manual master use
+
+`artisan sync:models --status` – show queue status and main settings.
+
+`artisan sync:models` – start sync.
+
+`artisan sync:models --reset` – sync all exportable models.
+
+**Options:**
+
+`--models=name1,name2` – exportable models names for sync.
+
+`--post-chunk=1000` – max models objects for one post-request.
+
+`--reset-chunk=3000` – all exportable models query chunk for refill queue.
 
 
 ## Tricks
